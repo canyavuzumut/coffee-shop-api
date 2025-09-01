@@ -1,5 +1,3 @@
-# app/routers/sales.py
-
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, func
@@ -12,7 +10,6 @@ router = APIRouter()
 
 @router.post("/", response_model=Sale)
 def create_sale(sale_request: SaleRequest, session: Session = Depends(get_session)):
-    # ... (create_sale fonksiyonunun içi)
     coffee = session.get(Coffee, sale_request.coffee_id)
     if not coffee:
         raise HTTPException(status_code=404, detail="Coffee not found")
@@ -44,13 +41,13 @@ def create_sale(sale_request: SaleRequest, session: Session = Depends(get_sessio
 
 @router.get("/", response_model=List[Sale])
 def read_sales(session: Session = Depends(get_session)):
-    # ... (read_sales fonksiyonunun içi)
+    
     sales = session.exec(select(Sale)).all()
     return sales
 
 @router.get("/reports/daily/", response_model=SalesReport)
 def get_daily_report(report_date: date, session: Session = Depends(get_session)):
-    # ... (get_daily_report fonksiyonunun içi)
+    
     date_str = report_date.strftime("%Y-%m-%d")
     sales = session.exec(
         select(func.sum(Sale.total_price), func.sum(Sale.quantity))
@@ -64,7 +61,7 @@ def get_daily_report(report_date: date, session: Session = Depends(get_session))
 
 @router.get("/reports/weekly/", response_model=SalesReport)
 def get_weekly_report(session: Session = Depends(get_session)):
-    # ... (get_weekly_report fonksiyonunun içi)
+    
     end_date = date.today()
     start_date = end_date - timedelta(days=7)
     sales = session.exec(
@@ -79,9 +76,7 @@ def get_weekly_report(session: Session = Depends(get_session)):
 
 @router.get("/reports/top-selling/", response_model=List[TopSellingItem])
 def get_top_selling_items(session: Session = Depends(get_session)):
-    """
-    En çok satan kahve türlerini listeler.
-    """
+    
     results = session.exec(
         select(Coffee.name, func.sum(Sale.quantity))
         .join(Sale, Sale.coffee_id == Coffee.id)
@@ -98,12 +93,9 @@ def get_top_selling_items(session: Session = Depends(get_session)):
 
 @router.put("/milk/stock", response_model=Milk)
 def update_milk_stock(stock_update: StockUpdate, session: Session = Depends(get_session)):
-    """
-    Süt stok miktarını günceller.
-    """
-    milk = session.get(Milk, 1) # Sadece bir adet süt tablomuz olduğu için ID'si 1'dir.
+    
+    milk = session.get(Milk, 1) 
     if not milk:
-        # Bu hata muhtemelen startup fonksiyonundaki hatadan kaynaklanır, çok nadir görülür.
         raise HTTPException(status_code=404, detail="Milk stock not found")
 
     milk.stock_ml = stock_update.new_stock
@@ -118,9 +110,7 @@ def get_report_by_date_range(
     end_date: date,
     session: Session = Depends(get_session)
 ):
-    """
-    Belirli bir tarih aralığındaki toplam satışları raporlar.
-    """
+    
     sales = session.exec(
         select(func.sum(Sale.total_price), func.sum(Sale.quantity))
         .where(Sale.sale_date >= start_date)

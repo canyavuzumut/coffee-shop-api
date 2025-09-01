@@ -1,5 +1,3 @@
-# app/routers/coffees.py
-
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
@@ -15,9 +13,7 @@ def create_coffee(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_manager_user)
 ):
-    """
-    Yeni bir kahve türü ekler ve başlangıç stoğunu kaydeder. (Yönetici yetkisi gerektirir)
-    """
+   
     db_coffee = Coffee.model_validate(coffee)
     session.add(db_coffee)
     session.commit()
@@ -29,9 +25,7 @@ def read_coffees(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_employee_user)
 ):
-    """
-    Tüm kahve türlerini listeler. (Çalışan yetkisi gerektirir)
-    """
+    
     coffees = session.exec(select(Coffee)).all()
     return coffees
 
@@ -41,9 +35,7 @@ def create_recipe(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_manager_user)
 ):
-    """
-    Yeni bir kahve tarifi ekler. (Yönetici yetkisi gerektirir)
-    """
+    
     db_recipe = Recipe.model_validate(recipe)
     
     coffee = session.get(Coffee, db_recipe.coffee_id)
@@ -60,9 +52,7 @@ def read_recipes(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_employee_user)
 ):
-    """
-    Tüm kahve tariflerini listeler. (Çalışan yetkisi gerektirir)
-    """
+    
     recipes = session.exec(select(Recipe)).all()
     return recipes
 
@@ -72,9 +62,7 @@ def get_coffee_details(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_employee_user)
 ):
-    """
-    Belirli bir kahvenin tüm detaylarını (tarifi dahil) döndürür. (Çalışan yetkisi gerektirir)
-    """
+
     coffee = session.get(Coffee, coffee_id)
     if not coffee:
         raise HTTPException(status_code=404, detail="Coffee not found")
@@ -95,9 +83,7 @@ def update_coffee_stock(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_manager_user)
 ):
-    """
-    Belirli bir kahvenin stok miktarını günceller. (Yönetici yetkisi gerektirir)
-    """
+    
     coffee = session.get(Coffee, coffee_id)
     if not coffee:
         raise HTTPException(status_code=404, detail="Coffee not found")
@@ -115,9 +101,7 @@ def update_coffee(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_manager_user)
 ):
-    """
-    Belirli bir kahve kaydını günceller. (Yönetici yetkisi gerektirir)
-    """
+   
     db_coffee = session.get(Coffee, coffee_id)
     if not db_coffee:
         raise HTTPException(status_code=404, detail="Coffee not found")
@@ -135,9 +119,7 @@ def delete_coffee(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_manager_user)
 ):
-    """
-    Belirli bir kahve kaydını siler. (Yönetici yetkisi gerektirir)
-    """
+    
     coffee = session.get(Coffee, coffee_id)
     if not coffee:
         raise HTTPException(status_code=404, detail="Coffee not found")
@@ -153,9 +135,6 @@ def update_recipe(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_manager_user)
 ):
-    """
-    Belirli bir tarifi günceller. (Yönetici yetkisi gerektirir)
-    """
     db_recipe = session.get(Recipe, recipe_id)
     if not db_recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
@@ -173,9 +152,7 @@ def delete_recipe(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_manager_user)
 ):
-    """
-    Belirli bir tarifi siler. (Yönetici yetkisi gerektirir)
-    """
+    
     recipe = session.get(Recipe, recipe_id)
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")

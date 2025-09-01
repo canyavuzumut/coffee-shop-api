@@ -1,7 +1,5 @@
-# app/main.py
-
 from fastapi import FastAPI
-from app.database import create_db_and_tables # Sadece bu fonksiyonu import et
+from app.database import create_db_and_tables 
 from app.routers import coffees, sales
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import Depends
@@ -16,7 +14,7 @@ app = FastAPI()
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
-    # create_initial_milk_stock() çağrısını kaldır
+    
 
 @app.get("/")
 def read_root():

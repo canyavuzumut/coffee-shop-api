@@ -1,5 +1,3 @@
-# app/database.py
-
 from sqlmodel import create_engine, Session, SQLModel
 from .models import Milk
 

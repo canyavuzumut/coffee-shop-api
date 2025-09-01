@@ -1,5 +1,3 @@
-# app/auth.py
-
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -12,13 +10,13 @@ from sqlmodel import Session, select
 from .database import get_session
 from .models import User
 
-# Parola hashleme için
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# JWT için
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-# Token için Secret Key ve Algoritma
+
 SECRET_KEY = "gizli-anahtar-buraya"
 ALGORITHM = "HS256"
 
@@ -71,4 +69,4 @@ async def get_employee_user(current_user: User = Depends(get_current_user)):
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to access this resource"
         )
-    return current_user
+    return current_user 
